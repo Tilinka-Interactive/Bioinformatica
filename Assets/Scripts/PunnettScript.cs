@@ -14,11 +14,13 @@ public class PunnettScript : MonoBehaviour
 
     private void Start(){
         
+        BinaryConverter conversor = new();
+        conversor.Start();
     }
-    private void AddPadre(Tupla Alelo) {
+    public void AddPadre(Tupla Alelo) {
         Padre.Add(Alelo);
     }
-    private void AddMadre(Tupla Alelo){
+    public void AddMadre(Tupla Alelo){
         Madre.Add(Alelo);
     }
     private void Cruzar(){
