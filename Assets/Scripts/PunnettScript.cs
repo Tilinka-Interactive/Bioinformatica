@@ -2,65 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
-public class PunnettScript : MonoBehaviour
-{
+public class PunnettScript : MonoBehaviour{
     private int cantAlelos;
     //private Tupla auxiliarTupla;
     private List<String> combinaciones;
     private List<Tupla> PadreCaracteristicas = new();
-    private List<Tupla> Padre = new();
-    private List<Tupla> Madre = new();
+    private List<Tupla> TuplasGeneradas = new();
+    //private List<Tupla> Padre = new();
     private List<Tupla> Hijos = new();
     private BinaryConverter conversor;
+    [SerializeField] private GameObject ShowSon;
+    [SerializeField] private GameObject ParentSons;
 
     private void Start() {
-        /*Ejemplo
-        Tupla car1 = new();
-        car1.SetDominante('A');
-        car1.SetRecesivo('a');
-        
-        Tupla car2 = new();
-        car2.SetDominante('B');
-        car2.SetRecesivo('b');
 
-        Tupla car3 = new();
-        car3.SetDominante('C');
-        car3.SetRecesivo('c');
-
-        Tupla car4 = new();
-        car4.SetDominante('D');
-        car4.SetRecesivo('d');
-
-        Tupla car5 = new();
-        car5.SetDominante('E');
-        car5.SetRecesivo('e');
-
-        Tupla car6 = new();
-        car6.SetDominante('F');
-        car6.SetRecesivo('f');
-
-        Tupla car7 = new();
-        car7.SetDominante('G');
-        car7.SetRecesivo('g');
-
-        Tupla car8 = new();
-        car8.SetDominante('H');
-        car8.SetRecesivo('h');
-
-
-        PadreCaracteristicas.Add(car1);
-        PadreCaracteristicas.Add(car2);
-        PadreCaracteristicas.Add(car3);
-        PadreCaracteristicas.Add(car4);
-        PadreCaracteristicas.Add(car5);
-        PadreCaracteristicas.Add(car6);
-        PadreCaracteristicas.Add(car7);
-        PadreCaracteristicas.Add(car8);
-        */
-        
-        
     }
 
     public void PreCombinar(int n) {
@@ -72,31 +30,18 @@ public class PunnettScript : MonoBehaviour
         for (int i = 0; i < combinaciones.Count; i++){
             Debug.Log(combinaciones[i]);
         }
-        //Combinar();
     }
     public void Combinar() {
-        CrearCombinacionesT(Padre, combinaciones);
-        //CrearCombinacionesT(Madre, combinaciones);
+        CrearCombinacionesT(TuplasGeneradas, combinaciones);
 
         //imprimir combinaciones traducidas
-        for (int j = 0; j < Padre.Count; j++)
-        {
-            Padre[j].SelfPrint();
+        for (int j = 0; j < TuplasGeneradas.Count; j++){
+            GameObject Son = Instantiate(ShowSon) as GameObject;
+            Son.transform.SetParent(ParentSons.transform);
+            Son.GetComponentInChildren<TextMeshProUGUI>().text = TuplasGeneradas[j].GetStringTupla();
         }
     }
-    public void AddPadre(Tupla Alelo) {
-        Padre.Add(Alelo);
-    }
-    public void AddMadre(Tupla Alelo){
-        Madre.Add(Alelo);
-    }
-    private void Cruzar(){
-        for (int i = 0; i < Padre.Count; i++) {
-            for (int j = 0; j < Madre.Count; j++) { 
 
-            }
-        }
-    }
     private void CrearCombinacionesT(List<Tupla> progenitor, List<String> combinaciones){
         //Recorre el arreglo de binarios 
         for (int i = 0; i < combinaciones.Count; i++) {
@@ -106,10 +51,22 @@ public class PunnettScript : MonoBehaviour
             
             //Recorre el número binario (String), toma los valores 1 a 1 y los reemplaza en tuplas nuevas
             for (int j = cantAlelos - 1; j >= 0; j--) {
-                if (comb[j].Equals('0')) aux.SetAlelo(j, PadreCaracteristicas[j].GetRecesivo());
-                else aux.SetAlelo(j, PadreCaracteristicas[j].GetDominante());
+                if (comb[j].Equals('0')) aux.SetAlelo(j, PadreCaracteristicas[j].GetDominante());
+                else aux.SetAlelo(j, PadreCaracteristicas[j].GetRecesivo());
             }
             progenitor.Add(aux);
         }
+    }
+    public void AddTuplaPadre(char dominante, char recesivo) {
+        Tupla auxTupla = new Tupla();
+        auxTupla.SetDominante(dominante);
+        auxTupla.SetRecesivo(recesivo);
+        PadreCaracteristicas.Add(auxTupla);
+    }
+    public void ChangeTupla(int id, char c1, char c2){
+        PadreCaracteristicas[id].SetDominante(c1);
+        PadreCaracteristicas[id].SetRecesivo(c2);
+        //Debug.Log(PadreCaracteristicas[id].GetDominante());
+        //Debug.Log(PadreCaracteristicas[id].GetRecesivo());
     }
 }
